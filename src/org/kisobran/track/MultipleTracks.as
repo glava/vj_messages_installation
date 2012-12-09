@@ -43,21 +43,18 @@ package org.kisobran.track
 		
 		protected override function partAdded(partName:String, instance:Object):void {
 			super.partAdded(partName, instance);
-			switch(instance) {
-				case trackOne: trackOne.prepareLabels(messages); break;
-			}
 		}
 		
 		private function onStartOnNewLine(evt:TrackEvent):void {
 			switch(evt.target) {
-				case trackOne: trackTwo.prepareLabels(evt.messages); trackTwo.start(); break;
-				case trackTwo: trackThree.prepareLabels(evt.messages); trackThree.start(); break;
+				case trackOne: trackTwo.prepareLabels(evt.messages); trackTwo.startMoving(); break;
+				case trackTwo: trackThree.prepareLabels(evt.messages); trackThree.startMoving(); break;
 				//case trackThree:  trackOne.start(); break;
 			}
 		}
 		
 		public function startTracks():void {
-			trackOne.start();
+			trackOne.prepareLabels(messages);
 		}
 		
 		public function updateMessages(messages:ArrayList):void {

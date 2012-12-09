@@ -9,6 +9,7 @@
 		<![CDATA[
 			import mx.collections.ArrayList;
 			import mx.effects.Move;
+			import mx.utils.OrderedObject;
 			
 			import org.kisobran.track.event.TrackEvent;
 			
@@ -16,21 +17,20 @@
 
 			private var _speed:int;
 			private var _splitedInNewLine:Boolean = false;
+			private var _messageTextUpdated:Boolean = false;
 			private var _messages:ArrayList;
-			private var _currentlyVisibile:int;
+			private var _currentlyVisibile:int = 0;
 			
 			private var _orderOfSwitcherLabel:int = 0;
 			
-			public function get speed():int
-			{
+			public function get speed():int {
 				return _speed;
 			}
 
-			public function set speed(value:int):void
-			{
+			public function set speed(value:int):void {
 				_speed = value;
 			}
-	
+			
 			protected function group1_enterFrameHandler(event:Event):void
 			{
 				for (var i:int = 0; i < 5; i++) 
@@ -50,19 +50,19 @@
 							}
 							
 							movingLabel.setMessage(_messages.toArray()[i]);
+							
 						}
 						
 						if(i == _orderOfSwitcherLabel && movingLabel.x + movingLabel.width > 1024 && !_splitedInNewLine) {
 							_splitedInNewLine = true;
+							trace("notify new line "+id);
 							dispatchEvent(new TrackEvent(TrackEvent.START_IN_NEW_LINE,_messages));
 						}
 					}
 				}
-				
 			}
 			
 			private function startMovingLabel(trackLabel:MovingLabel, label:String):void {
-				
 				trackLabel.setMessage(label);
 				trackLabel.x = - trackLabel.width;;
 				trackLabel.visible = true;
@@ -73,28 +73,48 @@
 				if(!_splitedInNewLine){
 					for (var i:int = 0; i < 5; i++) {
 						var movingLabel:MovingLabel =  this["track"+i];
-						movingLabel.messageLbl.text = messages.toArray()[i];
+						movingLabel.setMessage(messages.toArray()[i]);
+						_messageTextUpdated = true;
+						invalidateProperties();
+						invalidateDisplayList();	
 					}
+					_orderOfSwitcherLabel = 0;
 				}
+				else{
+				if(_currentlyVisibile == 4) {
+					_orderOfSwitcherLabel = 0;
+				}
+				else{
+					_orderOfSwitcherLabel = _currentlyVisibile + 1;	
+				}
+				}
+				
 				_messages = messages;
 				_splitedInNewLine = false;
 			}
 			
-			public function setLabelsOnInitialPosition():void {
+			private function setLabelsOnInitialPosition():void {
 				for (var i:int = 0; i < 5; i++) {
 					var movingLabel:MovingLabel =  this["track"+i];
-					movingLabel.x = - movingLabel.messageLbl.width;
+					movingLabel.x = -movingLabel.width;
 				}
 			}
 			
-			public function start():void {
-				
-				setLabelsOnInitialPosition();
-				track0.visible = true;
+			public function startMoving():void {
+				this["track"+_currentlyVisibile].visible = true;
 				if(!this.hasEventListener(Event.ENTER_FRAME)){
 					this.addEventListener(Event.ENTER_FRAME,group1_enterFrameHandler);
 				}
 			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				if(_messageTextUpdated == true) {
+					_messageTextUpdated = false;
+					setLabelsOnInitialPosition();
+					startMoving();
+				}
+			} 
 			
 			
 		]]>
@@ -103,7 +123,7 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<track:MovingLabel id="track0" x="-100" visible="false"/>
+	<track:MovingLabel id="track0" x="-500" visible="false"/>
 	<track:MovingLabel id="track1" x="-100" visible="false"/>
 	<track:MovingLabel id="track2"  x="-100" visible="false"/>
 	<track:MovingLabel id="track3"  x="-100" visible="false"/>
