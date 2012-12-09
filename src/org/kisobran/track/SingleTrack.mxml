@@ -81,12 +81,12 @@
 					_orderOfSwitcherLabel = 0;
 				}
 				else{
-				if(_currentlyVisibile == 4) {
-					_orderOfSwitcherLabel = 0;
-				}
-				else{
-					_orderOfSwitcherLabel = _currentlyVisibile + 1;	
-				}
+					if(_currentlyVisibile == 4) {
+						_orderOfSwitcherLabel = 0;
+					}
+					else{
+						_orderOfSwitcherLabel = _currentlyVisibile + 1;	
+					}
 				}
 				
 				_messages = messages;
