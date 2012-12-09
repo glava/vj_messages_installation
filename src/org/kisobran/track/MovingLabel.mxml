@@ -10,7 +10,6 @@
 			public function setMessage(message:String):void {
 				this.messageLbl.text = message;
 			}
-			
 		]]>
 	</fx:Script>
 	<s:Label id="messageLbl" fontSize="18"/>

@@ -4,8 +4,11 @@ package org.kisobran.track
 	
 	import mx.collections.ArrayList;
 	import mx.core.mx_internal;
+	import mx.events.TweenEvent;
 	
+	import org.kisobran.service.TwitterService;
 	import org.kisobran.track.event.TrackEvent;
+	import org.kisobran.track.event.TwitterEvent;
 	
 	import spark.components.SkinnableContainer;
 	import spark.effects.Move;
@@ -23,6 +26,7 @@ package org.kisobran.track
 		public var trackThree:SingleTrack;
 		
 		public var messages:ArrayList = new ArrayList();
+		public var _twitterService:TwitterService = new TwitterService();
 		
 		public function MultipleTracks()
 		{
@@ -34,6 +38,7 @@ package org.kisobran.track
 			messages.addItem("HitTclass4 is as close as possible to the example.  ");
 			
 			this.addEventListener(TrackEvent.START_IN_NEW_LINE, onStartOnNewLine);
+			_twitterService.addEventListener(TwitterEvent.NEW_TWITS_FOUNDED, newTwitsFounded);
 		}
 		
 		protected override function partAdded(partName:String, instance:Object):void {
@@ -57,6 +62,10 @@ package org.kisobran.track
 		
 		public function updateMessages(messages:ArrayList):void {
 			trackOne.prepareLabels(messages);
+		}
+		
+		public function newTwitsFounded(evt:TwitterEvent):void {
+			updateMessages(evt.twits);
 		}
 	}
 }
