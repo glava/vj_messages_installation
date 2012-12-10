@@ -38,7 +38,7 @@
 					var movingLabel:MovingLabel =  this["track"+i];
 					if(movingLabel.visible){
 						_currentlyVisibile = i;
-						movingLabel.x += 5;
+						movingLabel.x += 4;
 						if(movingLabel.x > 1024) {
 							movingLabel.visible = false;
 							switch(i) {

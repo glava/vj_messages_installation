@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+          skinClass="org.kisobran.settings.skin.OutWindowSkin"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="400"
+		  height="400"
+          initialize="window1_initializeHandler(event)"
+		   xmlns:moving="twitterzid.wall.moving.*"
+        >
+    <fx:Script><![CDATA[
+		import com.dborisenko.api.twitter.data.TwitterStatus;
+		
+		import mx.collections.ArrayCollection;
+		import mx.collections.ArrayList;
+		import mx.events.FlexEvent;
+		
+		import org.kisobran.settings.event.SettingsEvent;
+		
+
+        public var twitterHolderArray:ArrayCollection = new ArrayCollection;
+        public static const MAX_SHOWN_TWITTS:int = 5;
+
+
+        protected function window1_initializeHandler(event:FlexEvent):void {
+            addEventListener(KeyboardEvent.KEY_DOWN, keyDownEvent);
+            this.setFocus();
+        }
+
+        private function keyDownEvent(evt:KeyboardEvent):void {
+            if (evt.keyCode == Keyboard.ESCAPE) {
+                this.close();
+            }
+        }
+
+        protected function group1_mouseDownHandler(event:MouseEvent):void {
+            stage.nativeWindow.startMove();
+        }
+
+        protected function group1_mouseUpHandler(event:MouseEvent):void {
+            this.stopDrag();
+        }
+		
+		protected function togglebutton1_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new SettingsEvent(SettingsEvent.USE_TWITTER, true));
+			
+		}
+		
+		protected function multipleMessage_clickHandler(event:MouseEvent):void
+		{
+			var messages:ArrayList = new ArrayList();
+			for (var i:int = 0; i < 5; i++) {
+				var textInput:TextInput =  this["message"+i];
+				messages.addItem(textInput.text);
+			}
+			
+			dispatchEvent(new SettingsEvent(SettingsEvent.UPDATE_MUTLIIPLE_MESSAGE,messages));		
+		}
+		
+		protected function singleMessageBtn_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new SettingsEvent(SettingsEvent.UPDATE_SINGLE_MESSAGE, singleMessage.text));
+			
+		}
+		
+	]]></fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+	
+    <s:Group id="content"
+             width="100%"
+             height="100%"
+             mouseDown="group1_mouseDownHandler(event)"
+             mouseUp="group1_mouseUpHandler(event)"
+             doubleClickEnabled="true"
+             >
+        <s:Rect width="100%" height="100%">
+            <s:fill>
+                <s:SolidColor color="#ff44ff"/>
+            </s:fill>
+        </s:Rect>
+		<s:VGroup>
+			<s:Button label="Load twitts: #sadpanda" id="toggleButton" click="togglebutton1_clickHandler(event)"/>
+			
+			<s:VGroup>
+				<s:TextInput id="message0" width="300" maxChars="140"/>
+				<s:TextInput id="message1" width="300" maxChars="140"/>
+				<s:TextInput id="message2" width="300" maxChars="140"/>
+				<s:TextInput id="message3" width="300" maxChars="140"/>
+				<s:TextInput id="message4" width="300" maxChars="140"/>
+				<s:Button id="multipleMessage" label="Apply multiple messages" click="multipleMessage_clickHandler(event)"/>
+			</s:VGroup>
+
+			<s:VGroup>
+				<s:TextInput id="singleMessage" width="300" maxChars="140"/>
+				<s:Button id="singleMessageBtn" label="Apply single message" click="singleMessageBtn_clickHandler(event)"/>
+			</s:VGroup>
+		</s:VGroup>
+    </s:Group>
+</s:Window>

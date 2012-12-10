@@ -12,5 +12,5 @@
 			}
 		]]>
 	</fx:Script>
-	<s:Label id="messageLbl" fontSize="18"/>
+	<s:Label id="messageLbl" fontSize="30"/>
 </s:Group>

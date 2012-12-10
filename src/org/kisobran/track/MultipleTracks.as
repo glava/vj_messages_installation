@@ -2,13 +2,14 @@ package org.kisobran.track
 {
 	import flash.events.Event;
 	
+	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.core.mx_internal;
 	import mx.events.TweenEvent;
 	
-	import org.kisobran.service.TwitterService;
+	import org.kisobran.service.TwitterSearchService;
 	import org.kisobran.track.event.TrackEvent;
-	import org.kisobran.track.event.TwitterEvent;
+	import org.kisobran.track.event.TwitEvent;
 	
 	import spark.components.SkinnableContainer;
 	import spark.effects.Move;
@@ -16,6 +17,8 @@ package org.kisobran.track
 	
 	public class MultipleTracks extends SkinnableContainer
 	{
+		private static const NUMBER_OF_MESSAGES:int = 5;
+		
 		[SkinPart(required="true")]
 		public var trackOne:SingleTrack;
 		
@@ -25,20 +28,20 @@ package org.kisobran.track
 		[SkinPart(required="true")]
 		public var trackThree:SingleTrack;
 		
-		public var messages:ArrayList = new ArrayList();
-		public var _twitterService:TwitterService = new TwitterService();
+		public var _messages:ArrayList = new ArrayList();
+		public var _twitterService:TwitterSearchService = new TwitterSearchService("sadpanda");
+		public var lastUpdateTrack:int = 0;
+		public var _useTwitter:Boolean = false;
 		
 		public function MultipleTracks()
 		{
 			super();
-			messages.addItem("HitTest0 class is as close as possible to the example.  ");
-			messages.addItem("HitTest1 class is as close as possible to the example.  ");
-			messages.addItem("HitTest2 class is as close as possible to the example.  ");
-			messages.addItem("HitTest3 class is as close as possible to the example.  ");
-			messages.addItem("HitTclass4 is as close as possible to the example.  ");
-			
+			for (var i:int = 0; i < NUMBER_OF_MESSAGES; i++) 
+			{
+				_messages.addItem("");
+			}
 			this.addEventListener(TrackEvent.START_IN_NEW_LINE, onStartOnNewLine);
-			_twitterService.addEventListener(TwitterEvent.NEW_TWITS_FOUNDED, newTwitsFounded);
+			_twitterService.addEventListener(TwitEvent.TWITS_FOUNDED, newTwitsFounded);
 		}
 		
 		protected override function partAdded(partName:String, instance:Object):void {
@@ -54,15 +57,56 @@ package org.kisobran.track
 		}
 		
 		public function startTracks():void {
-			trackOne.prepareLabels(messages);
+			trackOne.prepareLabels(_messages);
 		}
 		
-		public function updateMessages(messages:ArrayList):void {
-			trackOne.prepareLabels(messages);
+		public function updateMessages(newMessages:ArrayList):void {
+			var size:int = newMessages.length > NUMBER_OF_MESSAGES ? NUMBER_OF_MESSAGES : newMessages.length;
+			_messages.removeAll();
+			for (var i:int = 0; i < size; i++) {
+				_messages.addItem(newMessages.getItemAt(i));
+			}
+			trackOne.prepareLabels(_messages);
 		}
 		
-		public function newTwitsFounded(evt:TwitterEvent):void {
-			updateMessages(evt.twits);
+		public function updateSingleTrack(message:String):void {
+			updateMessages(prepareNewListForSingleTrack(message, lastUpdateTrack));
+		}
+		
+		//generates new list using single text and old list
+		private function prepareNewListForSingleTrack(text:String, lastUpdateTrack:int):ArrayList {
+			var arrayList:ArrayList = new ArrayList();
+			for (var i:int = 0; i < _messages.length; i++) 
+			{
+				arrayList.addItem(_messages.getItemAt(i));	
+			}
+			
+			arrayList.addItemAt(text, lastUpdateTrack);
+			if(lastUpdateTrack == (NUMBER_OF_MESSAGES - 1)){
+				lastUpdateTrack = 0;
+			} else {
+				lastUpdateTrack + 1;
+			}
+			return arrayList;
+		}
+		
+		public function newTwitsFounded(evt:TwitEvent):void {
+			if(_useTwitter) {
+				var arr:ArrayList = evt.twits;
+				if(arr.length < NUMBER_OF_MESSAGES) {
+					for(var i:int; i< NUMBER_OF_MESSAGES - arr.length; i++) {
+						arr.addItem("");
+					}
+				}
+				updateMessages(arr);
+			}
+		}
+		
+		public function enableTwitterService(useTwitter:Boolean):void {
+			_useTwitter = useTwitter;
+			if(_useTwitter) {
+				_twitterService.doSearch();
+			}
 		}
 	}
 }
