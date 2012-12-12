@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:track="org.kisobran.track.*"
-		 height="256" >
+		 height="256">
 	
 	<fx:Script>
 		<![CDATA[
@@ -12,10 +12,11 @@
 			import mx.utils.OrderedObject;
 			
 			import org.kisobran.track.event.TrackEvent;
+			import org.kisobran.util.Util;
 			
 			import spark.components.Label;
 
-			private var _speed:int;
+			private var _speed:int = 5;
 			private var _splitedInNewLine:Boolean = false;
 			private var _messageTextUpdated:Boolean = false;
 			private var _messages:ArrayList;
@@ -33,29 +34,28 @@
 			
 			protected function group1_enterFrameHandler(event:Event):void
 			{
-				for (var i:int = 0; i < 5; i++) 
-				{
+				for (var i:int = 0; i < Config.NUMBER_OF_MESSAGES; i++) {
 					var movingLabel:MovingLabel =  this["track"+i];
+					//just move visible labels
 					if(movingLabel.visible){
 						_currentlyVisibile = i;
-						movingLabel.x += 4;
+						movingLabel.x += speed;
+						// if label left the screen, move next label to screen
 						if(movingLabel.x > 1024) {
 							movingLabel.visible = false;
 							switch(i) {
-								case 0: startMovingLabel(track1,_messages.toArray()[1] ); break; 
+								case 0: startMovingLabel(track1, _messages.toArray()[1]); break; 
 								case 1: startMovingLabel(track2, _messages.toArray()[2]); break; 
 								case 2: startMovingLabel(track3, _messages.toArray()[3]); break; 
 								case 3: startMovingLabel(track4, _messages.toArray()[4]); break; 
 								case 4: startMovingLabel(track0, _messages.toArray()[0]); break; 
 							}
 							
-							movingLabel.setMessage(_messages.toArray()[i]);
-							
 						}
-						
+						// in case that this label has been updated and that it's touching the edge of the screen
+						//and the line hasn't be transferd to another line => tranfer to another line
 						if(i == _orderOfSwitcherLabel && movingLabel.x + movingLabel.width > 1024 && !_splitedInNewLine) {
 							_splitedInNewLine = true;
-							trace("notify new line "+id);
 							dispatchEvent(new TrackEvent(TrackEvent.START_IN_NEW_LINE,_messages));
 						}
 					}
@@ -64,44 +64,45 @@
 			
 			private function startMovingLabel(trackLabel:MovingLabel, label:String):void {
 				trackLabel.setMessage(label);
-				trackLabel.x = - trackLabel.width;;
 				trackLabel.visible = true;
+				//this is aproximation. i wanted to have some close x position
+				//without waiting flex to give me new width
+				trackLabel.x = -( trackLabel.fontSize * 0.5 * label.length);
 			}
 			
 			
-			public function prepareLabels(messages:ArrayList):void {
-				if(!_splitedInNewLine){
+			public function updateLabels(messages:ArrayList):void {
+				
 					for (var i:int = 0; i < 5; i++) {
 						var movingLabel:MovingLabel =  this["track"+i];
-						movingLabel.setMessage(messages.toArray()[i]);
-						_messageTextUpdated = true;
-						invalidateProperties();
-						invalidateDisplayList();	
+						if(!movingLabel.visible){
+							movingLabel.x = - 1000;
+							movingLabel.setMessage(messages.toArray()[i]);
+						}
 					}
-					_orderOfSwitcherLabel = 0;
-				}
-				else{
-					if(_currentlyVisibile == 4) {
-						_orderOfSwitcherLabel = 0;
-					}
-					else{
-						_orderOfSwitcherLabel = _currentlyVisibile + 1;	
-					}
-				}
 				
+				_messageTextUpdated = true;
+				invalidateProperties();
+				invalidateDisplayList();	
+				
+				_orderOfSwitcherLabel = Util.incrementInMod(_currentlyVisibile, Config.NUMBER_OF_MESSAGES);
 				_messages = messages;
 				_splitedInNewLine = false;
 			}
 			
 			private function setLabelsOnInitialPosition():void {
 				for (var i:int = 0; i < 5; i++) {
+					
 					var movingLabel:MovingLabel =  this["track"+i];
-					movingLabel.x = -movingLabel.width;
+					if(!movingLabel.visible){
+						movingLabel.x = -movingLabel.width;
+					}
 				}
+				this["track"+_currentlyVisibile].visible = true;
 			}
 			
 			public function startMoving():void {
-				this["track"+_currentlyVisibile].visible = true;
+				
 				if(!this.hasEventListener(Event.ENTER_FRAME)){
 					this.addEventListener(Event.ENTER_FRAME,group1_enterFrameHandler);
 				}
@@ -115,6 +116,15 @@
 					startMoving();
 				}
 			} 
+
+			public function get currentlyVisibile():int {
+				return _currentlyVisibile;
+			}
+
+			public function set currentlyVisibile(value:int):void
+			{
+				_currentlyVisibile = value;
+			}
 			
 			
 		]]>
@@ -123,9 +133,9 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<track:MovingLabel id="track0" x="-500" visible="false"/>
-	<track:MovingLabel id="track1" x="-100" visible="false"/>
-	<track:MovingLabel id="track2"  x="-100" visible="false"/>
-	<track:MovingLabel id="track3"  x="-100" visible="false"/>
-	<track:MovingLabel id="track4"  x="-100" visible="false"/>
+	<track:MovingLabel id="track0" visible="false" x="-500"/>
+	<track:MovingLabel id="track1" visible="false" x="-100"/>
+	<track:MovingLabel id="track2" visible="false" x="-100"/>
+	<track:MovingLabel id="track3" visible="false" x="-100"/>
+	<track:MovingLabel id="track4" visible="false" x="-100"/>
 </s:Group>

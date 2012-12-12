@@ -10,6 +10,7 @@ package org.kisobran.track
 	import org.kisobran.service.TwitterSearchService;
 	import org.kisobran.track.event.TrackEvent;
 	import org.kisobran.track.event.TwitEvent;
+	import org.kisobran.util.Util;
 	
 	import spark.components.SkinnableContainer;
 	import spark.effects.Move;
@@ -17,8 +18,6 @@ package org.kisobran.track
 	
 	public class MultipleTracks extends SkinnableContainer
 	{
-		private static const NUMBER_OF_MESSAGES:int = 5;
-		
 		[SkinPart(required="true")]
 		public var trackOne:SingleTrack;
 		
@@ -29,14 +28,14 @@ package org.kisobran.track
 		public var trackThree:SingleTrack;
 		
 		public var _messages:ArrayList = new ArrayList();
-		public var _twitterService:TwitterSearchService = new TwitterSearchService("sadpanda");
+		public var _twitterService:TwitterSearchService = new TwitterSearchService("kisobran");
 		public var lastUpdateTrack:int = 0;
 		public var _useTwitter:Boolean = false;
 		
 		public function MultipleTracks()
 		{
 			super();
-			for (var i:int = 0; i < NUMBER_OF_MESSAGES; i++) 
+			for (var i:int = 0; i < Config.NUMBER_OF_MESSAGES; i++) 
 			{
 				_messages.addItem("");
 			}
@@ -50,23 +49,22 @@ package org.kisobran.track
 		
 		private function onStartOnNewLine(evt:TrackEvent):void {
 			switch(evt.target) {
-				case trackOne: trackTwo.prepareLabels(evt.messages); trackTwo.startMoving(); break;
-				case trackTwo: trackThree.prepareLabels(evt.messages); trackThree.startMoving(); break;
-				//case trackThree:  trackOne.start(); break;
+				case trackOne: trackTwo.updateLabels(evt.messages); trackTwo.startMoving(); break;
+				case trackTwo: trackThree.updateLabels(evt.messages); trackThree.startMoving(); break;
 			}
 		}
 		
 		public function startTracks():void {
-			trackOne.prepareLabels(_messages);
+			trackOne.updateLabels(_messages);
 		}
 		
 		public function updateMessages(newMessages:ArrayList):void {
-			var size:int = newMessages.length > NUMBER_OF_MESSAGES ? NUMBER_OF_MESSAGES : newMessages.length;
+			var size:int = newMessages.length > Config.NUMBER_OF_MESSAGES ? Config.NUMBER_OF_MESSAGES : newMessages.length;
 			_messages.removeAll();
 			for (var i:int = 0; i < size; i++) {
 				_messages.addItem(newMessages.getItemAt(i));
 			}
-			trackOne.prepareLabels(_messages);
+			trackOne.updateLabels(_messages);
 		}
 		
 		public function updateSingleTrack(message:String):void {
@@ -81,25 +79,26 @@ package org.kisobran.track
 				arrayList.addItem(_messages.getItemAt(i));	
 			}
 			
-			arrayList.addItemAt(text, lastUpdateTrack);
-			if(lastUpdateTrack == (NUMBER_OF_MESSAGES - 1)){
-				lastUpdateTrack = 0;
-			} else {
-				lastUpdateTrack + 1;
-			}
+			arrayList.addItemAt(text, Util.incrementInMod(trackOne.currentlyVisibile+1, Config.NUMBER_OF_MESSAGES));
 			return arrayList;
 		}
 		
 		public function newTwitsFounded(evt:TwitEvent):void {
 			if(_useTwitter) {
 				var arr:ArrayList = evt.twits;
-				if(arr.length < NUMBER_OF_MESSAGES) {
-					for(var i:int; i< NUMBER_OF_MESSAGES - arr.length; i++) {
+				if(arr.length < Config.NUMBER_OF_MESSAGES) {
+					for(var i:int; i< Config.NUMBER_OF_MESSAGES - arr.length; i++) {
 						arr.addItem("");
 					}
 				}
 				updateMessages(arr);
 			}
+		}
+		
+		public function changeSpeed(value:int):void {
+			trackOne.speed = value;
+			trackTwo.speed = value;
+			trackThree.speed = value;
 		}
 		
 		public function enableTwitterService(useTwitter:Boolean):void {

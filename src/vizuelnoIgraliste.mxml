@@ -14,16 +14,14 @@
 			
 			import org.kisobran.settings.OutWindow;
 			import org.kisobran.settings.event.SettingsEvent;
+			import org.kisobran.terminal.TerminalWindow;
+			import org.kisobran.terminal.event.TerminalEvent;
+			import org.kisobran.util.Util;
 			
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 				multiple.startTracks();
-				
-			}
-			protected function button1_clickHandlerSwitch(event:MouseEvent):void
-			{
-				
 				
 			}
 			
@@ -32,20 +30,31 @@
 				
 				var ow:OutWindow = new OutWindow();
 				ow.addEventListener(SettingsEvent.USE_TWITTER, onUseTwitter);
-				ow.addEventListener(SettingsEvent.UPDATE_MUTLIIPLE_MESSAGE, onUpdateMultipleMessage);
-				ow.addEventListener(SettingsEvent.UPDATE_SINGLE_MESSAGE, onUpdateSingleMessage);
-				ow.addEventListener(SettingsEvent.USE_TWITTER, onUseTwitter);
+				ow.addEventListener(SettingsEvent.SPEED_CHANGE, onChangeSpeed);
 				ow.open(true);
+				
+				var terminal:TerminalWindow = new TerminalWindow();
+				terminal.addEventListener(TerminalEvent.UPDATE_SINGLE_MESSAGE, onMessageEntered);
+				terminal.open(true);
 			}
 			
 			private function onUseTwitter(event:SettingsEvent):void {
 				multiple.enableTwitterService(event.data);
 			}
+			
 			private function onUpdateMultipleMessage(event:SettingsEvent):void {
 				multiple.updateMessages(event.data as ArrayList);
 			}
+			
 			private function onUpdateSingleMessage(event:SettingsEvent):void {
 				multiple.updateSingleTrack(event.data as String);
+			}
+			
+			private function onMessageEntered(event:TerminalEvent):void {
+				multiple.updateSingleTrack(event.message);
+			}
+			private function onChangeSpeed(event:SettingsEvent):void {
+				multiple.changeSpeed(event.data as int);
 			}
 			
 		]]>

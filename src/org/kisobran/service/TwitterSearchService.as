@@ -8,6 +8,8 @@ package org.kisobran.service
 	import com.dborisenko.api.twitter.oauth.events.OAuthTwitterEvent;
 	
 	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import mx.collections.ArrayList;
 	
@@ -18,6 +20,8 @@ package org.kisobran.service
 		private var twitterApi:TwitterAPI = new TwitterAPI();
 		private var searchOperation:TwitterOperation;
 		private var _searchTerm:String;
+		private var searchTimer:Timer;
+		
 		public function TwitterSearchService(term:String)
 		{
 			_searchTerm = term;
@@ -28,10 +32,20 @@ package org.kisobran.service
 			twitterApi.connection.addEventListener(OAuthTwitterEvent.AUTHORIZED, handleAuthorized);
 			twitterApi.connection.authorize(Config.CONSUMER_KEY, Config.CONSUMER_SECRET);
 			searchOperation.addEventListener(com.dborisenko.api.twitter.events.TwitterEvent.COMPLETE, searchHandler);
+			initSearchTimer();
+		}
+		
+		private function initSearchTimer():void {
+			searchTimer = new Timer(Config.SEARCH_INTERVAL);
+			searchTimer.addEventListener(TimerEvent.TIMER, timer_timer);
+			searchTimer.start();
+		}
+		
+		private function timer_timer(evt:TimerEvent):void {
+			doSearch();
 		}
 		
 		protected function handleRequestTokenReceived(event:OAuthTwitterEvent):void {
-			trace("do search");
 			doSearch();
 		}
 		
@@ -52,7 +66,6 @@ package org.kisobran.service
 		}
 		
 		private function searchHandler(evt:TwitterEvent):void {
-			trace("search handled");
 			var newTweets:ArrayList = new ArrayList();
 			for each(var status:TwitterStatus in evt.data.results) {
 				if (status.text.search("#"+_searchTerm) >= 0) {
@@ -60,7 +73,6 @@ package org.kisobran.service
 				}
 			}
 			if(newTweets.length > 0) {
-				trace("dispathced");
 					dispatchEvent(new TwitEvent(TwitEvent.TWITS_FOUNDED, newTweets));
 			}
 		}

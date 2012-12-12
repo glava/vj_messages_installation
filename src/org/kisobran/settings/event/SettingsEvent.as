@@ -7,6 +7,7 @@ package org.kisobran.settings.event
 		public static const USE_TWITTER:String = "use.twitter";
 		public static const UPDATE_SINGLE_MESSAGE:String = "update.single.message";
 		public static const UPDATE_MUTLIIPLE_MESSAGE:String = "update.multiple.message";
+		public static const SPEED_CHANGE:String = "speed.change";
 		
 		public var data:Object;
 		

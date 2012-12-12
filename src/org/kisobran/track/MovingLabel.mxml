@@ -10,7 +10,23 @@
 			public function setMessage(message:String):void {
 				this.messageLbl.text = message;
 			}
+
+			public function get fontSize():int
+			{
+				return _fontSize;
+			}
+			
+			[Bindable]
+			public function set fontSize(value:int):void
+			{
+				_fontSize = value;
+			}
+
+			
+			private var _fontSize:int = 30;
+			
+			
 		]]>
 	</fx:Script>
-	<s:Label id="messageLbl" fontSize="30"/>
+	<s:Label id="messageLbl" fontSize="{fontSize}"/>
 </s:Group>
