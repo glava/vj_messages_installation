@@ -1,67 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					   xmlns:s="library://ns.adobe.com/flex/spark"
-					   width="1024"
-					   height="768"
-					   skinClass="MainApplicationSkin"
-					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:track="org.kisobran.track.*"
-					   addedToStage="windowedapplication1_addedToStageHandler(event)"
-					   >
-	
-	<fx:Script>
-		<![CDATA[
-			import mx.collections.ArrayList;
-			
-			import org.kisobran.settings.OutWindow;
-			import org.kisobran.settings.event.SettingsEvent;
-			import org.kisobran.terminal.TerminalWindow;
-			import org.kisobran.terminal.event.TerminalEvent;
-			import org.kisobran.util.Util;
-			
-			
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				multiple.startTracks();
-				
-			}
-			
-			protected function windowedapplication1_addedToStageHandler(event:Event):void
-			{
-				
-				var ow:OutWindow = new OutWindow();
-				ow.addEventListener(SettingsEvent.USE_TWITTER, onUseTwitter);
-				ow.addEventListener(SettingsEvent.SPEED_CHANGE, onChangeSpeed);
-				ow.open(true);
-				
-				var terminal:TerminalWindow = new TerminalWindow();
-				terminal.addEventListener(TerminalEvent.UPDATE_SINGLE_MESSAGE, onMessageEntered);
-				terminal.open(true);
-			}
-			
-			private function onUseTwitter(event:SettingsEvent):void {
-				multiple.enableTwitterService(event.data);
-			}
-			
-			private function onUpdateMultipleMessage(event:SettingsEvent):void {
-				multiple.updateMessages(event.data as ArrayList);
-			}
-			
-			private function onUpdateSingleMessage(event:SettingsEvent):void {
-				multiple.updateSingleTrack(event.data as String);
-			}
-			
-			private function onMessageEntered(event:TerminalEvent):void {
-				multiple.updateSingleTrack(event.message);
-			}
-			private function onChangeSpeed(event:SettingsEvent):void {
-				multiple.changeSpeed(event.data as int);
-			}
-			
-		]]>
-	</fx:Script>
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<track:MultipleTracks id="multiple" skinClass="org.kisobran.track.skins.MultipleTracksSkin" width="100%" height="100%"/>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+                       xmlns:s="library://ns.adobe.com/flex/spark"
+                       width="1024"
+                       height="768"
+                       skinClass="MainApplicationSkin"
+                       xmlns:mx="library://ns.adobe.com/flex/mx"
+                       xmlns:track="org.kisobran.track.*"
+                       addedToStage="windowedapplication1_addedToStageHandler(event)"
+                       close="windowedapplication1_closeHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayList;
+
+            import org.kisobran.settings.OutWindow;
+            import org.kisobran.settings.event.SettingsEvent;
+            import org.kisobran.terminal.TerminalWindow;
+            import org.kisobran.terminal.event.TerminalEvent;
+            import org.kisobran.util.Util;
+
+
+            protected function button1_clickHandler(event:MouseEvent):void {
+                multiple.startTracks();
+
+            }
+
+            protected function windowedapplication1_addedToStageHandler(event:Event):void {
+
+                var ow:OutWindow=new OutWindow();
+                ow.addEventListener(SettingsEvent.USE_TWITTER, onUseTwitter);
+                ow.addEventListener(SettingsEvent.SPEED_CHANGE, onChangeSpeed);
+                ow.open(true);
+
+                var terminal:TerminalWindow=new TerminalWindow();
+                terminal.addEventListener(TerminalEvent.UPDATE_SINGLE_MESSAGE, onMessageEntered);
+                terminal.open(true);
+            }
+
+            private function onUseTwitter(event:SettingsEvent):void {
+                multiple.enableTwitterService(event.data);
+            }
+
+            private function onUpdateMultipleMessage(event:SettingsEvent):void {
+                multiple.updateMessages(event.data as ArrayList);
+            }
+
+            private function onUpdateSingleMessage(event:SettingsEvent):void {
+                multiple.updateSingleTrack(event.data as String);
+            }
+
+            private function onMessageEntered(event:TerminalEvent):void {
+                multiple.updateSingleTrack(event.message);
+            }
+
+            private function onChangeSpeed(event:SettingsEvent):void {
+                multiple.changeSpeed(event.data as int);
+            }
+
+            protected function windowedapplication1_closeHandler(event:Event):void {
+                multiple.backupMessages();
+
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <track:MultipleTracks id="multiple"
+                          skinClass="org.kisobran.track.skins.MultipleTracksSkin"
+                          width="100%"
+                          height="100%"/>
 </s:WindowedApplication>

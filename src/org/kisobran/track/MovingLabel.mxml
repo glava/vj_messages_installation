@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" >
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<fx:Script>
-		<![CDATA[
-			public function setMessage(message:String):void {
-				this.messageLbl.text = message;
-			}
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx">
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <fx:Script>
+        <![CDATA[
+            public function setMessage(message:String):void {
+                this.messageLbl.text=message;
+            }
 
-			public function get fontSize():int
-			{
-				return _fontSize;
-			}
-			
-			[Bindable]
-			public function set fontSize(value:int):void
-			{
-				_fontSize = value;
-			}
+            public function get fontSize():int {
+                return _fontSize;
+            }
 
-			
-			private var _fontSize:int = 30;
-			
-			
-		]]>
-	</fx:Script>
-	<s:Label id="messageLbl" fontSize="{fontSize}"/>
+            [Bindable]
+            public function set fontSize(value:int):void {
+                _fontSize=value;
+            }
+
+
+            private var _fontSize:int=30;
+        ]]>
+    </fx:Script>
+    <s:Label id="messageLbl"
+             fontSize="{fontSize}"/>
 </s:Group>

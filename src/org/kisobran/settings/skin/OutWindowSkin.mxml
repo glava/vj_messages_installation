@@ -50,32 +50,29 @@
          * @playerversion AIR 1.5
          * @productversion Flex 4
          */
-        static private const exclusions:Array = ["backgroundRect", "contentGroup", "statusText"];
+        static private const exclusions:Array=["backgroundRect", "contentGroup", "statusText"];
 
         /**
          * @private
          */
-        override public function get colorizeExclusions():Array
-        {
+        override public function get colorizeExclusions():Array {
             return exclusions;
         }
 
         /**
          * @private
          */
-        override protected function initializationComplete():void
-        {
-            useChromeColor = true;
+        override protected function initializationComplete():void {
+            useChromeColor=true;
             super.initializationComplete();
         }
 
         /**
          *  @private
          */
-        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
-        {
-            backgroundFill.color = getStyle("backgroundColor");
-            backgroundFill.alpha = getStyle("backgroundAlpha");
+        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+            backgroundFill.color=getStyle("backgroundColor");
+            backgroundFill.alpha=getStyle("backgroundAlpha");
             super.updateDisplayList(unscaledWidth, unscaledHeight);
         }
     </fx:Script>
@@ -130,7 +127,6 @@
                      fontSize="10"
                      color="0x585858"
                      width="100%"
-					 
                      maxDisplayedLines="1"
                      visible="false"
                      includeInLayout="false"/>

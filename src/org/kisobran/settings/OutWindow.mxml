@@ -1,89 +1,101 @@
 <?xml version="1.0"?>
-<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
           skinClass="org.kisobran.settings.skin.OutWindowSkin"
           xmlns:mx="library://ns.adobe.com/flex/mx"
-		  width="400"
-		  height="400"
+          width="400"
+          height="400"
           initialize="window1_initializeHandler(event)"
-		   xmlns:moving="twitterzid.wall.moving.*"
-        >
-    <fx:Script><![CDATA[
-		import com.dborisenko.api.twitter.data.TwitterStatus;
-		
-		import mx.collections.ArrayCollection;
-		import mx.collections.ArrayList;
-		import mx.events.FlexEvent;
-		import mx.events.SliderEvent;
-		
-		import org.kisobran.settings.event.SettingsEvent;
-		
+          xmlns:moving="twitterzid.wall.moving.*">
+    <fx:Script>
+        <![CDATA[
+            import com.dborisenko.api.twitter.data.TwitterStatus;
 
-        public var twitterHolderArray:ArrayCollection = new ArrayCollection;
-        public static const MAX_SHOWN_TWITTS:int = 5;
+            import mx.collections.ArrayCollection;
+            import mx.collections.ArrayList;
+            import mx.events.FlexEvent;
+            import mx.events.SliderEvent;
+
+            import org.kisobran.settings.event.SettingsEvent;
 
 
-        protected function window1_initializeHandler(event:FlexEvent):void {
-        }
+            public var twitterHolderArray:ArrayCollection=new ArrayCollection;
+            public static const MAX_SHOWN_TWITTS:int=5;
 
-        private function keyDownEvent(evt:KeyboardEvent):void {
-        }
 
-        protected function group1_mouseDownHandler(event:MouseEvent):void {
-        }
+            protected function window1_initializeHandler(event:FlexEvent):void {
+            }
 
-        protected function group1_mouseUpHandler(event:MouseEvent):void {
-        }
-		
-		protected function togglebutton1_clickHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new SettingsEvent(SettingsEvent.USE_TWITTER, true));
-			
-		}
-		
-		protected function multipleMessage_clickHandler(event:MouseEvent):void
-		{
-		/* 	var messages:ArrayList = new ArrayList();
-			for (var i:int = 0; i < 5; i++) {
-				var textInput:TextInput =  this["message"+i];
-				messages.addItem(textInput.text);
-			}
-			
-			dispatchEvent(new SettingsEvent(SettingsEvent.UPDATE_MUTLIIPLE_MESSAGE,messages));		 */
-		}
-		
-		protected function singleMessageBtn_clickHandler(event:MouseEvent):void
-		{
-			/* dispatchEvent(new SettingsEvent(SettingsEvent.UPDATE_SINGLE_MESSAGE, singleMessage.text)); */
-			
-		}
-		
-		protected function speedSlider_changeHandler(event:Event):void {
-			dispatchEvent(new SettingsEvent(SettingsEvent.SPEED_CHANGE, speedSlider.value));
-			
-		}
-		
-	]]></fx:Script>
+            private function keyDownEvent(evt:KeyboardEvent):void {
+            }
+
+            protected function group1_mouseDownHandler(event:MouseEvent):void {
+            }
+
+            protected function group1_mouseUpHandler(event:MouseEvent):void {
+            }
+
+            protected function togglebutton1_clickHandler(event:MouseEvent):void {
+                dispatchEvent(new SettingsEvent(SettingsEvent.USE_TWITTER, true));
+
+            }
+
+            protected function multipleMessage_clickHandler(event:MouseEvent):void {
+            /* 	var messages:ArrayList = new ArrayList();
+                for (var i:int = 0; i < 5; i++) {
+                    var textInput:TextInput =  this["message"+i];
+                    messages.addItem(textInput.text);
+                }
+
+                dispatchEvent(new SettingsEvent(SettingsEvent.UPDATE_MUTLIIPLE_MESSAGE,messages));		 */
+            }
+
+            protected function singleMessageBtn_clickHandler(event:MouseEvent):void {
+            /* dispatchEvent(new SettingsEvent(SettingsEvent.UPDATE_SINGLE_MESSAGE, singleMessage.text)); */
+
+            }
+
+            protected function speedSlider_changeHandler(event:Event):void {
+                dispatchEvent(new SettingsEvent(SettingsEvent.SPEED_CHANGE, speedSlider.value));
+
+            }
+        ]]>
+    </fx:Script>
     <s:layout>
         <s:BasicLayout/>
     </s:layout>
-	
+
     <s:Group id="content"
              width="100%"
              height="100%"
              mouseDown="group1_mouseDownHandler(event)"
              mouseUp="group1_mouseUpHandler(event)"
-             doubleClickEnabled="true"
-             >
-        <s:Rect width="100%" height="100%">
+             doubleClickEnabled="true">
+        <s:Rect width="100%"
+                height="100%">
             <s:fill>
                 <s:SolidColor color="#ff44ff"/>
             </s:fill>
         </s:Rect>
-		<s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" gap="100" height="100%">
-			
-			<s:Button label=" Start and load twitts: #kisobran" id="toggleButton" click="togglebutton1_clickHandler(event)"/>
-			<s:HSlider width="300" value="5"  id="speedSlider" minimum="1" maximum="20" change="speedSlider_changeHandler(event)" snapInterval="1" bottom="10" height="20"/>	
-		</s:VGroup>
-		
+        <s:VGroup horizontalAlign="center"
+                  verticalAlign="middle"
+                  width="100%"
+                  gap="100"
+                  height="100%">
+
+            <s:Button label=" Start and load twitts: #kisobran"
+                      id="toggleButton"
+                      click="togglebutton1_clickHandler(event)"/>
+            <s:HSlider width="300"
+                       value="5"
+                       id="speedSlider"
+                       minimum="1"
+                       maximum="20"
+                       change="speedSlider_changeHandler(event)"
+                       snapInterval="1"
+                       bottom="10"
+                       height="20"/>
+        </s:VGroup>
+
     </s:Group>
 </s:Window>
