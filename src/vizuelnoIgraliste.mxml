@@ -30,6 +30,7 @@
                 var ow:OutWindow=new OutWindow();
                 ow.addEventListener(SettingsEvent.USE_TWITTER, onUseTwitter);
                 ow.addEventListener(SettingsEvent.SPEED_CHANGE, onChangeSpeed);
+				ow.addEventListener(SettingsEvent.START, onStart);
                 ow.open(true);
 
                 var terminal:TerminalWindow=new TerminalWindow();
@@ -39,10 +40,6 @@
 
             private function onUseTwitter(event:SettingsEvent):void {
                 multiple.enableTwitterService(event.data);
-            }
-
-            private function onUpdateMultipleMessage(event:SettingsEvent):void {
-                multiple.updateMessages(event.data as ArrayList);
             }
 
             private function onUpdateSingleMessage(event:SettingsEvent):void {
@@ -55,6 +52,9 @@
 
             private function onChangeSpeed(event:SettingsEvent):void {
                 multiple.changeSpeed(event.data as int);
+            }
+            private function onStart(event:SettingsEvent):void {
+                multiple.startTracks();
             }
 
             protected function windowedapplication1_closeHandler(event:Event):void {

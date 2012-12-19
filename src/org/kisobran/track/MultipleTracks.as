@@ -64,7 +64,7 @@ package org.kisobran.track {
             trackOne.updateLabels(_messages);
         }
 
-        public function updateMessages(newMessages:ArrayList):void {
+        private function updateMessages(newMessages:ArrayList):void {
             var size:int=newMessages.length > Config.NUMBER_OF_MESSAGES ? Config.NUMBER_OF_MESSAGES : newMessages.length;
             _messages.removeAll();
             for (var i:int=0; i < size; i++) {
@@ -95,12 +95,9 @@ package org.kisobran.track {
         public function newTwitsFounded(evt:TwitEvent):void {
             if (_useTwitter) {
                 var arr:ArrayList=evt.twits;
-                if (arr.length < Config.NUMBER_OF_MESSAGES) {
-                    for (var i:int; i < Config.NUMBER_OF_MESSAGES - arr.length; i++) {
-                        arr.addItem("");
-                    }
-                }
-                updateMessages(arr);
+				for (var i:int = 0; i < arr.length; i++) {
+					updateSingleTrack(arr.getItemAt(i) as String);
+				}
             }
         }
 
